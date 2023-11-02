@@ -6,7 +6,7 @@ function toHoursAndMinutes(totalMinutes) {
   return { hours, minutes };
 }
 
-function Calculator({ workouts }) {
+function Calculator({ workouts, allowSound, clickSound }) {
   const [number, setNumber] = useState(workouts.at(0).numExercises);
   const [sets, setSets] = useState(3);
   const [speed, setSpeed] = useState(90);
@@ -16,6 +16,10 @@ function Calculator({ workouts }) {
   useEffect(() => {
     setDuration((number * sets * speed) / 60 + (sets - 1) * durationBreak);
   }, [number, sets, speed, durationBreak]);
+
+  useEffect(() => {
+    allowSound ? clickSound.play() : clickSound.pause();
+  }, [allowSound, clickSound, number, sets, speed, durationBreak]);
 
   function handleIncrement() {
     setDuration((d) => d + 1);
