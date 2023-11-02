@@ -1,5 +1,11 @@
 import { memo, useEffect, useState } from "react";
 
+function toHoursAndMinutes(totalMinutes) {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return { hours, minutes };
+}
+
 function Calculator({ workouts }) {
   const [number, setNumber] = useState(workouts.at(0).numExercises);
   const [sets, setSets] = useState(3);
@@ -11,24 +17,19 @@ function Calculator({ workouts }) {
     setDuration((number * sets * speed) / 60 + (sets - 1) * durationBreak);
   }, [number, sets, speed, durationBreak]);
 
-  const mins = Math.floor(duration);
-
-  function toHoursAndMinutes(totalMinutes) {
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    return { hours, minutes };
+  function handleIncrement() {
+    setDuration((d) => d + 1);
   }
+
+  function handleDecrement() {
+    setDuration((d) => d - 1);
+  }
+
+  const mins = Math.floor(duration);
 
   let { hours, minutes } = toHoursAndMinutes(mins);
   if (minutes < 10) minutes = "0" + minutes;
 
-  function handleIncrement() {
-    setDuration((d) => d + 1);
-  }
-  function handleDecrement() {
-    setDuration((d) => d - 1);
-  }
   return (
     <>
       <form>
@@ -74,7 +75,7 @@ function Calculator({ workouts }) {
             value={durationBreak}
             onChange={(e) => setDurationBreak(e.target.value)}
           />
-          <span>{durationBreak} minutes/break</span>
+          <span>{durationBreak} minutes/set</span>
         </div>
       </form>
       <section>
