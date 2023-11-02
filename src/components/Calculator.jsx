@@ -19,7 +19,7 @@ function Calculator({ workouts, allowSound, clickSound }) {
 
   useEffect(() => {
     allowSound ? clickSound.play() : clickSound.pause();
-  }, [allowSound, clickSound, number, sets, speed, durationBreak]);
+  }, [allowSound, clickSound, duration]);
 
   function handleIncrement() {
     setDuration((d) => d + 1);
