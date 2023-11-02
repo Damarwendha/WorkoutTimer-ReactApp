@@ -8,7 +8,7 @@ function Calculator({ workouts }) {
   const [duration, setDuration] = useState(0);
 
   useEffect(() => {
-    setDuration((number * sets * speed) / 60 + (sets - 1) * durationBreak)
+    setDuration((number * sets * speed) / 60 + (sets - 1) * durationBreak);
   }, [number, sets, speed, durationBreak]);
 
   const mins = Math.floor(duration);
@@ -22,6 +22,13 @@ function Calculator({ workouts }) {
 
   let { hours, minutes } = toHoursAndMinutes(mins);
   if (minutes < 10) minutes = "0" + minutes;
+
+  function handleIncrement() {
+    setDuration((d) => d + 1);
+  }
+  function handleDecrement() {
+    setDuration((d) => d - 1);
+  }
   return (
     <>
       <form>
@@ -71,10 +78,12 @@ function Calculator({ workouts }) {
         </div>
       </form>
       <section>
+        <button onClick={handleDecrement}>-</button>
         <p>
           {hours === 0 && minutes + " : 00"}
           {hours !== 0 && hours + " : " + minutes + " : 00"}
         </p>
+        <button onClick={handleIncrement}>+</button>
       </section>
     </>
   );
