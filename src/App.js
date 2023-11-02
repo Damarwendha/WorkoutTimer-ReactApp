@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import Calculator from "./Calculator";
-import ToggleSounds from "./ToggleSounds";
+import Calculator from "./components/Calculator";
+import ToggleSounds from "./components/ToggleSounds";
+import music from "./sounds/music.m4a";
+import ClickSound from "./sounds/ClickSound.m4a";
+import Header from "./components/Header";
+
+const sound = new Audio(music);
+const clickSound = new Audio(ClickSound);
 
 function formatTime(date) {
   return new Intl.DateTimeFormat("en", {
@@ -13,7 +19,16 @@ function formatTime(date) {
 }
 
 function App() {
+  const [allowSound, setAllowSound] = useState(false);
   const [time, setTime] = useState(formatTime(new Date()));
+
+  useEffect(function () {
+    const id = setInterval(function () {
+      setTime(formatTime(new Date()));
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, []);
 
   // Will be be AM or PM
   const partOfDay = time.slice(-2);
@@ -43,20 +58,20 @@ function App() {
     ];
   }, [partOfDay]);
 
-  useEffect(function () {
-    const id = setInterval(function () {
-      setTime(formatTime(new Date()));
-    }, 1000);
-
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <main>
-      <h1>Workout timer</h1>
-      <time>For your workout on {time}</time>
-      <ToggleSounds />
-      <Calculator workouts={workouts} />
+      <Header time={time} />
+      <ToggleSounds
+        allowSound={allowSound}
+        setAllowSound={setAllowSound}
+        sound={sound}
+        clickSound={clickSound}
+      />
+      <Calculator
+        workouts={workouts}
+        allowSound={allowSound}
+        clickSound={clickSound}
+      />
     </main>
   );
 }
