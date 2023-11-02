@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import clickSound from './ClickSound.m4a';
+import { memo, useState } from "react";
 
-function Calculator({ workouts, allowSound }) {
+function Calculator({ workouts }) {
   const [number, setNumber] = useState(workouts.at(0).numExercises);
   const [sets, setSets] = useState(3);
   const [speed, setSpeed] = useState(90);
@@ -9,14 +8,16 @@ function Calculator({ workouts, allowSound }) {
 
   const duration = (number * sets * speed) / 60 + (sets - 1) * durationBreak;
   const mins = Math.floor(duration);
-  const seconds = (duration - mins) * 60;
 
-  const playSound = function () {
-    if (!allowSound) return;
-    const sound = new Audio(clickSound);
-    sound.play();
-  };
+  function toHoursAndMinutes(totalMinutes) {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
 
+    return { hours, minutes };
+  }
+
+  let { hours, minutes } = toHoursAndMinutes(mins);
+  if (minutes < 10) minutes = "0" + minutes;
   return (
     <>
       <form>
@@ -33,9 +34,9 @@ function Calculator({ workouts, allowSound }) {
         <div>
           <label>How many sets?</label>
           <input
-            type='range'
-            min='1'
-            max='5'
+            type="range"
+            min="1"
+            max="5"
             value={sets}
             onChange={(e) => setSets(e.target.value)}
           />
@@ -44,10 +45,10 @@ function Calculator({ workouts, allowSound }) {
         <div>
           <label>How fast are you?</label>
           <input
-            type='range'
-            min='30'
-            max='180'
-            step='30'
+            type="range"
+            min="30"
+            max="180"
+            step="30"
             value={speed}
             onChange={(e) => setSpeed(e.target.value)}
           />
@@ -56,9 +57,9 @@ function Calculator({ workouts, allowSound }) {
         <div>
           <label>Break length</label>
           <input
-            type='range'
-            min='1'
-            max='10'
+            type="range"
+            min="1"
+            max="10"
             value={durationBreak}
             onChange={(e) => setDurationBreak(e.target.value)}
           />
@@ -66,16 +67,13 @@ function Calculator({ workouts, allowSound }) {
         </div>
       </form>
       <section>
-        <button onClick={() => {}}>–</button>
         <p>
-          {mins < 10 && '0'}
-          {mins}:{seconds < 10 && '0'}
-          {seconds}
+          {hours === 0 && minutes + " : 00"}
+          {hours !== 0 && hours + " : " + minutes + " : 00"}
         </p>
-        <button onClick={() => {}}>+</button>
       </section>
     </>
   );
 }
 
-export default Calculator;
+export default memo(Calculator);
